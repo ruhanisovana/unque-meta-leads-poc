@@ -46,10 +46,12 @@ def save_lead(lead):
                 "field_data": {"stringValue": json.dumps(lead['field_data'])}
             }
         }
-        url = f"{BASE_URL}/{lead['id']}"
-        requests.patch(url, json=payload, timeout=10)
-        return True
-    except:
+        url = f"{BASE_URL}?documentId={lead['id']}"
+        r = requests.post(url, json=payload, timeout=10)
+        print(r.text)
+        return r.status_code in [200,201]
+    except Exception as e:
+        print(e)
         return False
 
 @app.route('/', methods=['GET'])
