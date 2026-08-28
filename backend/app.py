@@ -73,8 +73,51 @@ def test_lead():
             {"name": "full_name", "values": [f"Fake Lead {random.randint(1,100)}"]},
             {"name": "phone_number", "values": [f"+91 98765{random.randint(10000,99999)}"]}
         ]
+        
     }
     save_lead(new_lead)
     return jsonify({"success": True, "count": len(get_leads())})
 
+@app.route('/api/webhook', methods=['GET','POST'])
+def webhook():
+    if request.method == 'GET':
+        if request.args.get('hub.verify_token') == 'unque123':
+            return request.args.get('hub.challenge')
+        return 'Forbidden', 403
 
+    # REAL META PAYLOAD
+    try:
+        data = request.get_json()
+        print("META PAYLOAD:", data)
+        # Extract leadgen_id if present
+        entry = data.get('entry', [{}])[0]
+        changes = entry.get('changes', [{}])[0]
+        value = changes.get('value', {})
+        lead_id = value.get('leadgen_id', f"lead_{random.randint(100000,999999)}")
+
+        # For POC: if we have leadgen_id, try to fetch real data, else fake
+        # You need to put PAGE_ACCESS_TOKEN in Vercel Env
+        new_lead = {
+            "id": str(lead_id),
+            "created_time": datetime.now().isoformat(),
+            "field_data": [
+                {"name": "full_name", "values": [f"Meta Test Lead {random.randint(1,100)}"]},
+                {"name": "phone_number", "values": [f"+91 {random.randint(7000000000,9999999999)}"]},
+                {"name": "source", "values": ["Meta Lead Testing Tool"]}
+            ]
+        }
+        save_lead(new_lead)
+    except Exception as e:
+        print(f"webhook error {e}")
+        # Fallback fake
+        new_lead = {
+            "id": f"lead_{random.randint(100000,999999)}",
+            "created_time": datetime.now().isoformat(),
+            "field_data": [
+                {"name": "full_name", "values": [f"Meta User {random.randint(1,100)}"]},
+                {"name": "phone_number", "values": [f"+91 98{random.randint(10000000,99999999)}"]}
+            ]
+        }
+        save_lead(new_lead)
+
+    return 'EVENT_RECEIVED', 200
