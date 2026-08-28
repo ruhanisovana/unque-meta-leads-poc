@@ -77,19 +77,4 @@ def test_lead():
     save_lead(new_lead)
     return jsonify({"success": True, "count": len(get_leads())})
 
-@app.route('/api/webhook', methods=['GET','POST'])
-def webhook():
-    if request.method == 'GET':
-        if request.args.get('hub.verify_token') == 'unque123':
-            return request.args.get('hub.challenge')
-        return 'Forbidden', 403
-    new_lead = {
-        "id": f"lead_{random.randint(100000,999999)}",
-        "created_time": datetime.now().isoformat(),
-        "field_data": [
-            {"name": "full_name", "values": [f"Meta User {random.randint(1,100)}"]},
-            {"name": "phone_number", "values": [f"+91 98{random.randint(10000000,99999999)}"]}
-        ]
-    }
-    save_lead(new_lead)
-    return 'EVENT_RECEIVED', 200
+
