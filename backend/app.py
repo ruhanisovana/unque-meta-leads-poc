@@ -3,6 +3,8 @@ from datetime import datetime
 import random, os, json
 
 app = Flask(__name__)
+application = app
+handler = app
 
 # Try Firebase
 db = None
