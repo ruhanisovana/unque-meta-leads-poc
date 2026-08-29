@@ -18,10 +18,10 @@ def get_leads():
             for d in docs:
                 fid = d['name'].split('/')[-1]
                 f = d.get('fields', {})
-                # Try to get any name/phone
+                
                 name = f.get('name', {}).get('stringValue') or f.get('full_name', {}).get('stringValue') or "Unknown"
                 phone = f.get('phone', {}).get('stringValue') or f.get('phone_number', {}).get('stringValue') or ""
-                # Check if field_data exists (from webhook)
+                
                 fd_raw = f.get('field_data', {}).get('stringValue')
                 if fd_raw:
                     try:
@@ -33,7 +33,7 @@ def get_leads():
                 leads.append({"id": fid, "field_data": fd, "raw": f})
             return leads
         elif r.status_code == 404:
-            return [] # No collection yet
+            return [] 
     except Exception as e:
         print(e)
     return []
@@ -85,18 +85,17 @@ def webhook():
             return request.args.get('hub.challenge')
         return 'Forbidden', 403
 
-    # REAL META PAYLOAD
+    
     try:
         data = request.get_json()
         print("META PAYLOAD:", data)
-        # Extract leadgen_id if present
+        
         entry = data.get('entry', [{}])[0]
         changes = entry.get('changes', [{}])[0]
         value = changes.get('value', {})
         lead_id = value.get('leadgen_id', f"lead_{random.randint(100000,999999)}")
 
-        # For POC: if we have leadgen_id, try to fetch real data, else fake
-        # You need to put PAGE_ACCESS_TOKEN in Vercel Env
+        
         new_lead = {
             "id": str(lead_id),
             "created_time": datetime.now().isoformat(),
@@ -109,7 +108,7 @@ def webhook():
         save_lead(new_lead)
     except Exception as e:
         print(f"webhook error {e}")
-        # Fallback fake
+
         new_lead = {
             "id": f"lead_{random.randint(100000,999999)}",
             "created_time": datetime.now().isoformat(),
