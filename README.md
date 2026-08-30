@@ -19,3 +19,16 @@
 4. New lead appears live
 
 ## Architecture
+
+## 📹 Demo & Walkthrough
+
+### 1. System Walkthrough (Main Demo - As per Requirement)
+This video shows the complete flow as requested - App already open, submitting lead via Meta Lead Testing Tool, and lead appearing live without refreshing.
+🔗 **Link:** https://drive.google.com/file/d/1WErhAdruA4meklThDUcOfbZ4ahDIPlCL/view?usp=drivesdk
+
+### 2. Coding Walkthrough (Architecture & Code Explanation)
+Detailed code walkthrough explaining Webhook, Graph API, Socket.io integration, and React Native frontend.
+🔗 **Link:** https://drive.google.com/file/d/1whW36jt6s6oS48ILV8h65QxBq_8voWCl/view?usp=drivesdk
+
+---
+**Note:** Both videos access is set to `Anyone with the link - Viewer`
